@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+   <h1>Случайная шутка</h1>
+
+   {% for message in app.flashes('notice') %}
+      <div class="flash-notice">
+         {{ message }}
+      </div>
+   {% endfor %}
+
+   {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+      {{ form_widget(form) }}
+
+      <input type="submit" value="Получить"/>
+   {{ form_end(form) }}
+
+{% endblock %}
