@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Tests\Client;
 
@@ -12,81 +12,91 @@ use PHPUnit\Framework\TestCase;
 
 class JokeSourceClientTest extends TestCase
 {
-    /**
-     * @throws JokeSourceClientException
-     */
     public function testGetCategories(): void
     {
         $mock = new MockHandler([
             new Response(200, [], '{"type":"success","value":["explicit","nerdy"]}'),
-            new Response(500, [], ''),
-            new Response(200, [], ''),
-            new Response(200, [], '{"type":"fail"}'),
-            new Response(200, [], '{"type":"success"}'),
-            new Response(200, [], '{"type":"success","value": ""}'),
         ]);
 
         $handler = HandlerStack::create($mock);
         $client = Client::createWithConfig(['handler' => $handler]);
-
         $jokeSourceClient = new JokeSourceClient('', $client);
 
         $categories = $jokeSourceClient->getCategories();
         $this->assertIsArray($categories, print_r($categories, true));
         $this->assertCount(2, $categories, print_r($categories, true));
-
-        for($i = 0; $i < 5; $i++) {
-            $this->assertException(JokeSourceClientException::class, function () use ($jokeSourceClient) {
-                $jokeSourceClient->getCategories();
-            });
-        }
     }
 
     /**
-     * @throws JokeSourceClientException
+     * @dataProvider failGetCategoriesResponseProvider
+     * @param Response $response
      */
-    public function testGetRandomJoke(): void
+    public function testGetCategoriesFail(Response $response): void
     {
-        $mock = new MockHandler([
-            new Response(200, [], '{"type":"success","value":{"id":100,"joke":"A joke about Jack Norris","categories":[]}}'),
-            new Response(500, [], ''),
-            new Response(200, [], ''),
-            new Response(200, [], '{"type":"fail"}'),
-            new Response(200, [], '{"type":"success"}'),
-            new Response(200, [], '{"type":"success","value": ""}'),
-            new Response(200, [], '{"type":"success","value":{"id":"  ","joke":"A joke about Jack Norris","categories":[]}}'),
-        ]);
+        $this->expectException(JokeSourceClientException::class);
 
+        $mock = new MockHandler([$response]);
         $handler = HandlerStack::create($mock);
         $client = Client::createWithConfig(['handler' => $handler]);
 
         $jokeSourceClient = new JokeSourceClient('', $client);
-
-        $randomJoke = $jokeSourceClient->getRandomJoke(['nerdy']);
-        $this->assertEquals(100, $randomJoke->getId(), $randomJoke->getId());
-        $this->assertEquals('A joke about Jack Norris', $randomJoke->getText());
-        $this->assertEmpty($randomJoke->getCategories(), print_r($randomJoke->getCategories(), true));
-
-        for($i = 0; $i < 6; $i++) {
-            $this->assertException(JokeSourceClientException::class, function () use ($jokeSourceClient) {
-                $jokeSourceClient->getRandomJoke();
-            });
-        }
+        $jokeSourceClient->getCategories();
     }
 
     /**
-     * @param string $expectClass
-     * @param callable $callback
+     * @return iterable
      */
-    protected function assertException(string $expectClass, callable $callback): void
+    public function failGetCategoriesResponseProvider()
     {
-        try {
-            $callback();
-        } catch (\Throwable $exception) {
-            $this->assertInstanceOf($expectClass, $exception, 'An invalid exception was thrown');
-            return;
-        }
+        yield [new Response(500, [], '')];
+        yield [new Response(200, [], '')];
+        yield [new Response(200, [], '{"type":"fail"}')];
+        yield [new Response(200, [], '{"type":"success"}')];
+        yield [new Response(200, [], '{"type":"success","value": ""}')];
+    }
 
-        $this->fail('No exception was thrown');
+    public function testGetRandomJoke(): void
+    {
+        $mock = new MockHandler([
+            new Response(200, [], '{"type":"success","value":{"id":100,"joke":"A joke about Jack Norris","categories":[]}}'),
+        ]);
+
+        $handler = HandlerStack::create($mock);
+        $client = Client::createWithConfig(['handler' => $handler]);
+        $jokeSourceClient = new JokeSourceClient('', $client);
+
+        $randomJoke = $jokeSourceClient->getRandomJoke(['nerdy']);
+        $this->assertEquals(100, $randomJoke->getId(), (string)$randomJoke->getId());
+        $this->assertEquals('A joke about Jack Norris', $randomJoke->getText());
+        $this->assertEmpty($randomJoke->getCategories(), print_r($randomJoke->getCategories(), true));
+    }
+
+    /**
+     * @dataProvider failGetRandomJokeResponseProvider
+     * @param Response $response
+     */
+    public function testGetRandomJokeFail(Response $response): void
+    {
+        $this->expectException(JokeSourceClientException::class);
+
+        $mock = new MockHandler([$response]);
+        $handler = HandlerStack::create($mock);
+        $client = Client::createWithConfig(['handler' => $handler]);
+
+        $jokeSourceClient = new JokeSourceClient('', $client);
+        $jokeSourceClient->getRandomJoke();
+    }
+
+    /**
+     * @return iterable
+     */
+    public function failGetRandomJokeResponseProvider(): iterable
+    {
+        yield [new Response(500, [], '')];
+        yield [new Response(200, [], '')];
+        yield [new Response(200, [], '{"type":"fail"}')];
+        yield [new Response(200, [], '{"type":"success"}')];
+        yield [new Response(200, [], '{"type":"success","value": ""}')];
+        yield [new Response(200, [], '{"type":"success","value":{"id":"a","joke":"A joke about Jack Norris","categories":[]}}')];
     }
 }
