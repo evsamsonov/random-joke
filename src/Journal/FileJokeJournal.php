@@ -22,6 +22,7 @@ class FileJokeJournal implements JokeJournalInterface
     public function __construct(string $filePath, Filesystem $filesystem)
     {
         $this->filePath = $filePath;
+        $this->filesystem = $filesystem;
     }
 
     /**
