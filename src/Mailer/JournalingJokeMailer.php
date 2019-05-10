@@ -9,10 +9,10 @@ use App\Journal\JokeJournalInterface;
 class JournalingJokeMailer implements JokeMailerInterface
 {
     /** @var JokeMailerInterface */
-    protected $mailer;
+    private $mailer;
 
     /** @var JokeJournalInterface */
-    protected $journal;
+    private $journal;
 
     public function __construct(JokeMailerInterface $jokeMailer, JokeJournalInterface $journal)
     {
