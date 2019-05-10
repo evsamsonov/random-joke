@@ -3,7 +3,7 @@
 namespace App\Mailer;
 
 use App\Entity\Joke;
-use App\Entity\RandomJokeRequest;
+use App\Form\Model\RandomJokeRequest;
 
 class JokeMailer implements JokeMailerInterface
 {

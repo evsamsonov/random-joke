@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace App\Form;
+namespace App\Form\Type;
 
 use App\Client\JokeSourceClientInterface;
-use App\Entity\RandomJokeRequest;
+use App\Form\Model\RandomJokeRequest;
 use App\Exception\JokeSourceClientException;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;

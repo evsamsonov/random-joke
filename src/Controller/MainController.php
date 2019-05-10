@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 use App\Client\JokeSourceClientInterface;
-use App\Entity\RandomJokeRequest;
+use App\Form\Model\RandomJokeRequest;
 use App\Exception\JokeSourceClientException;
-use App\Form\RandomJokeRequestType;
+use App\Form\Type\RandomJokeRequestType;
 use App\Mailer\JokeMailerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
