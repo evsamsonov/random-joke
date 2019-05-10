@@ -9,7 +9,7 @@ interface JokeSourceClientInterface
 {
     /**
      * Возвращает случайную шутку
-     * @param array $categories
+     * @param string[] $categories
      * @return Joke
      * @throws JokeSourceClientException
      */
@@ -17,7 +17,7 @@ interface JokeSourceClientInterface
 
     /**
      * Возвращает список категорий
-     * @return array
+     * @return string[]
      * @throws JokeSourceClientException
      */
     public function getCategories(): array;

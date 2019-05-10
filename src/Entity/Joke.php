@@ -5,14 +5,19 @@ namespace App\Entity;
 class Joke
 {
     /** @var int */
-    protected $id;
+    private $id;
 
     /** @var string */
-    protected $text;
+    private $text;
 
-    /** @var array */
-    protected $categories = [];
+    /** @var string[] */
+    private $categories = [];
 
+    /**
+     * @param int $id
+     * @param string $text
+     * @param string[] $categories
+     */
     public function __construct(int $id, string $text, array $categories = [])
     {
         $this->id = $id;

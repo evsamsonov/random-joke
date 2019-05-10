@@ -20,7 +20,7 @@ class JokeSourceClientTest extends TestCase
 
         $handler = HandlerStack::create($mock);
         $client = Client::createWithConfig(['handler' => $handler]);
-        $jokeSourceClient = new JokeSourceClient('', $client);
+        $jokeSourceClient = new JokeSourceClient($client);
 
         $categories = $jokeSourceClient->getCategories();
         $this->assertIsArray($categories, print_r($categories, true));
@@ -39,7 +39,7 @@ class JokeSourceClientTest extends TestCase
         $handler = HandlerStack::create($mock);
         $client = Client::createWithConfig(['handler' => $handler]);
 
-        $jokeSourceClient = new JokeSourceClient('', $client);
+        $jokeSourceClient = new JokeSourceClient($client);
         $jokeSourceClient->getCategories();
     }
 
@@ -63,7 +63,7 @@ class JokeSourceClientTest extends TestCase
 
         $handler = HandlerStack::create($mock);
         $client = Client::createWithConfig(['handler' => $handler]);
-        $jokeSourceClient = new JokeSourceClient('', $client);
+        $jokeSourceClient = new JokeSourceClient($client);
 
         $randomJoke = $jokeSourceClient->getRandomJoke(['nerdy']);
         $this->assertEquals(100, $randomJoke->getId(), (string)$randomJoke->getId());
@@ -83,7 +83,7 @@ class JokeSourceClientTest extends TestCase
         $handler = HandlerStack::create($mock);
         $client = Client::createWithConfig(['handler' => $handler]);
 
-        $jokeSourceClient = new JokeSourceClient('', $client);
+        $jokeSourceClient = new JokeSourceClient($client);
         $jokeSourceClient->getRandomJoke();
     }
 

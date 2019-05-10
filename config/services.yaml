@@ -29,12 +29,17 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    Http\Adapter\Guzzle6\Client: ~
+    app.joke_source_http_client:
+        class: Http\Adapter\Guzzle6\Client
+        factory:
+            - Http\Adapter\Guzzle6\Client
+            - createWithConfig
+        arguments:
+            - base_uri: '%joke_source_client.host%'
 
     App\Client\JokeSourceClient:
         arguments:
-            $host: '%joke_source_client.host%'
-            $httpClient: '@Http\Adapter\Guzzle6\Client'
+            $httpClient: '@app.joke_source_http_client'
 
     App\Mailer\JokeMailer:
         arguments:

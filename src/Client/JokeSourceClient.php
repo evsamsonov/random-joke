@@ -13,17 +13,13 @@ use function \GuzzleHttp\Psr7\build_query;
 class JokeSourceClient implements JokeSourceClientInterface
 {
     /** @var string */
-    protected const SUCCESS_STATUS = 'success';
-
-    /** @var string */
-    protected $host;
+    private const SUCCESS_STATUS = 'success';
 
     /** @var ClientInterface */
-    protected $httpClient;
+    private $httpClient;
 
-    public function __construct($host, ClientInterface $httpClient)
+    public function __construct(ClientInterface $httpClient)
     {
-        $this->host = $host;
         $this->httpClient = $httpClient;
     }
 
@@ -44,7 +40,7 @@ class JokeSourceClient implements JokeSourceClientInterface
             /** @var ResponseInterface $response */
             $query = build_query($query);
             $response = $this->httpClient->sendRequest(
-                new Request('GET', "{$this->host}/jokes/random?{$query}")
+                new Request('GET', "/jokes/random?{$query}")
             );
         } catch (ClientExceptionInterface $e) {
             throw new JokeSourceClientException('Ошибка при отправке запроса', 0, $e);
@@ -72,7 +68,7 @@ class JokeSourceClient implements JokeSourceClientInterface
     {
         try {
             /** @var ResponseInterface $response */
-            $response = $this->httpClient->sendRequest(new Request('GET', "{$this->host}/categories"));
+            $response = $this->httpClient->sendRequest(new Request('GET', "/categories"));
         } catch (ClientExceptionInterface $e) {
             throw new JokeSourceClientException('Ошибка при отправке запроса', 0, $e);
         }
@@ -91,7 +87,7 @@ class JokeSourceClient implements JokeSourceClientInterface
      * @param $response
      * @throws JokeSourceClientException
      */
-    protected function checkResponse($response): void
+    private function checkResponse($response): void
     {
         if ( ! $response || ! isset($response['type'], $response['value'])) {
             throw new JokeSourceClientException(
