@@ -10,9 +10,13 @@ class JokeMailer implements JokeMailerInterface
     /** @var \Swift_Mailer */
     protected $mailer;
 
-    public function __construct(\Swift_Mailer $mailer)
+    /** @var string */
+    protected $from;
+
+    public function __construct(\Swift_Mailer $mailer, string $from)
     {
         $this->mailer = $mailer;
+        $this->from = $from;
     }
 
     /**
@@ -25,7 +29,7 @@ class JokeMailer implements JokeMailerInterface
     {
         $message = (new \Swift_Message())
             ->setSubject("Случайная шутка из {$request->getCategory()}")
-            ->setFrom('noreply@noreply.ru')
+            ->setFrom($this->from)
             ->setTo($request->getEmail())
             ->setBody($joke->getText())
         ;

@@ -7,6 +7,7 @@ parameters:
     locale: 'ru'
     joke_source_client.host: 'http://api.icndb.com'
     file_joke_journal.file_path: '%kernel.project_dir%/var/random-joke-journal.txt'
+    joke_mailer.from: 'random@joke.ru'
 
 services:
     # default configuration for services in *this* file
@@ -44,6 +45,7 @@ services:
     App\Mailer\JokeMailer:
         arguments:
             $mailer: '@mailer'
+            $from: '%joke_mailer.from%'
 
     App\Mailer\JournalingJokeMailer:
         decorates: App\Mailer\JokeMailer
